@@ -2,7 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 
-import connectDB from "./mongodb/connect";
+// import connectDB from "./mongodb/connect";
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ app.get("/", async (req, res) => {
 
 const startServer = async () => {
   try {
-    connectDB(process.env.MONGODB_URL);
+    // connectDB(process.env.MONGODB_URL);
     app.listen(8080, () => console.log("server is running"));
   } catch (err) {
     console.log({ err });
