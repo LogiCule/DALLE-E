@@ -16,9 +16,25 @@ const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = () => {
-    setLoading(true);
-    navigate("/");
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    if (form.prompt && form.photo) setLoading(true);
+    try {
+      const resp = await fetch("http://localhost:8080/api/v1/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      await resp.json();
+      navigate("/");
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

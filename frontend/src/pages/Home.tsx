@@ -9,8 +9,7 @@ const RenderCards = ({
   data: PostDataType[];
   title: string;
 }) => {
-  if (data?.length > 0)
-    return data.map((post) => <Card key={post.id} {...post} />);
+  if (data?.length > 0) return data.map((post) => <Card {...post} />);
   return (
     <h2 className="mt-5 font-bold text-[#6449ff] text-xl uppercase">{title}</h2>
   );
@@ -19,17 +18,38 @@ const RenderCards = ({
 const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [allPosts, setAllPosts] = useState<PostDataType[]>([]);
+  const [filerPosts, setFilterPosts] = useState<PostDataType[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-      setAllPosts([]);
-      setSearchText("");
-    }, 1000);
-  }, []);
+    setFilterPosts(
+      allPosts?.filter((post) => post.prompt.includes(searchText))
+    );
+  }, [allPosts, searchText]);
 
-  console.log({ allPosts, searchText });
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const resp = await fetch("http://localhost:8080/api/v1/post", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (resp.ok) {
+          const json = await resp.json();
+          setAllPosts(json.data.reverse());
+        }
+      } catch (error) {
+        console.log({ error });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <section>
@@ -44,7 +64,13 @@ const Home = () => {
       </div>
 
       <div className="mt-16">
-        <FormField />
+        <FormField
+          type="text"
+          name="text"
+          placeholder="Search Posts"
+          value={searchText}
+          handleChange={(e) => setSearchText(e.target.value)}
+        />
       </div>
 
       <div className="mt-10">
@@ -54,13 +80,16 @@ const Home = () => {
           <>
             {searchText && (
               <h2 className="font-medium text-[#666e75] text-xl mb-3">
-                Showing Results for{" "}
+                Showing Results for
                 <span className="text-[222328]">{searchText}</span>
               </h2>
             )}
             <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
               {searchText ? (
-                <RenderCards data={allPosts} title="No search Results found" />
+                <RenderCards
+                  data={filerPosts}
+                  title="No search Results found"
+                />
               ) : (
                 <RenderCards data={allPosts} title="No Posts found" />
               )}
