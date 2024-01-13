@@ -16,7 +16,10 @@ const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    setLoading(true);
+    navigate("/");
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => {
@@ -46,7 +49,7 @@ const CreatePost = () => {
           setForm((prev) => {
             return { ...prev, photo: data.photo };
           });
-        setTimeout(() => setGeneratingImg(false), 1500);
+        setTimeout(() => setGeneratingImg(false), 2000);
       } catch (error) {
         setGeneratingImg(false);
         console.log({ error });
@@ -95,6 +98,7 @@ const CreatePost = () => {
                 src={Preview}
                 alt={"preview"}
                 className="w-9/12 h-9/12 object-contain opacity-40"
+                loading="lazy"
               />
             )}
 
@@ -111,6 +115,7 @@ const CreatePost = () => {
             type="button"
             onClick={generateImage}
             className="text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            disabled={form.prompt === ""}
           >
             {generatingImg ? "Generating..." : "Generate"}
           </button>
