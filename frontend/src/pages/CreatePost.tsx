@@ -46,7 +46,7 @@ const CreatePost = () => {
           setForm((prev) => {
             return { ...prev, photo: data.photo };
           });
-        setGeneratingImg(false);
+        setTimeout(() => setGeneratingImg(false), 1500);
       } catch (error) {
         setGeneratingImg(false);
         console.log({ error });
