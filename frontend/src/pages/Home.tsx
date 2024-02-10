@@ -23,7 +23,9 @@ const Home = () => {
 
   useEffect(() => {
     setFilterPosts(
-      allPosts?.filter((post) => post.prompt.toLowerCase().includes(searchText))
+      allPosts?.filter((post) =>
+        post.prompt.toLowerCase().includes(searchText.trim())
+      )
     );
   }, [allPosts, searchText]);
 
@@ -72,9 +74,7 @@ const Home = () => {
           name="text"
           placeholder="Search Posts"
           value={searchText}
-          handleChange={(e) =>
-            setSearchText(e.target.value.toLowerCase().trim())
-          }
+          handleChange={(e) => setSearchText(e.target.value.toLowerCase())}
         />
       </div>
 
