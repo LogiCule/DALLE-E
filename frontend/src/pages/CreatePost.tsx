@@ -20,7 +20,7 @@ const CreatePost = () => {
     event?.preventDefault();
     if (form.prompt && form.photo) setLoading(true);
     try {
-      const resp = await fetch("https://dalle-noyy.onrender.com/api/v1/post", {
+      const resp = await fetch("http://localhost:8080/api/v1/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,11 +49,12 @@ const CreatePost = () => {
     });
   };
 
+  //https://dalle-noyy.onrender.com
   const generateImage = async () => {
     if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const resp = await fetch("https://dalle-noyy.onrender.com/api/v1/dalle", {
+        const resp = await fetch("http://localhost:8080/api/v1/dalle", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -63,12 +64,12 @@ const CreatePost = () => {
         const data = await resp.json();
         if (data.photo)
           setForm((prev) => {
-            return { ...prev, photo: data.photo };
+            return { ...prev, photo: `data:image/jpeg;base64,${data.photo}` };
           });
-        setTimeout(() => setGeneratingImg(false), 2000);
       } catch (error) {
-        setGeneratingImg(false);
         console.log({ error });
+      } finally {
+        setGeneratingImg(false);
       }
     }
   };

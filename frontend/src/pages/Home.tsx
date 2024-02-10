@@ -31,15 +31,12 @@ const Home = () => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const resp = await fetch(
-          "https://dalle-noyy.onrender.com/api/v1/post",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const resp = await fetch("http://localhost:8080/api/v1/post", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (resp.ok) {
           const json = await resp.json();
           setAllPosts(json.data.reverse());
